@@ -39,4 +39,4 @@ ROOT: The root directory from which files are served.
 ```
 
 ## License
-This project is open-source and available under the MIT License. See the LICENSE file for more details.
+This project is open-source and available under the MIT License. See the LICENSE file for more details..
