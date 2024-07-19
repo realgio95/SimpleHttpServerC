@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h> 
+#include <stdio.h> 
 #include <stdlib.h>
 #include <Windows.h>
 #include <winsock2.h>
@@ -8,9 +11,37 @@
 #define MAXIMUM_REQUEST_SIZE 2048
 #define ROOT "./src"
 
-void handling()
-{
-    printf("Hello");
+void handling(int sock) {
+    char request[MAXIMUM_REQUEST_SIZE]
+    recv(sock, request, MAXIMUM_REQUEST_SIZE, 0);
+
+    char method[10], path[255], protocol[20];
+    sscanf(request, "%s %s %s", method, path, protocol);
+
+    char filePath[255];
+    sprintf(filePath, "%s%s", ROOT, path);
+    if (strcmp(path, "\") = 0)")){
+        sprintf(filePath, "%s/index.html", ROOT);
+    }
+
+    int file = open(filePath, O_RDONLY);
+
+    if (file == -1) {
+        char res[] = "HTTP/1.1 404 Not Found\r\n\r\n";
+        send(sock, res, strlen(res), 0);
+    } else {
+        char res[] = "HTTP/1.1 200 OK\r\n\r\n";
+        send(sock, res, strlen(res),0);
+
+        char buf[1024];
+        ssize_t readBytes;
+
+        while ((readBytes = read(file, buf, sizeof(file))) > 0) {
+            send(sock, buf, readBytes, 0);
+        }
+
+        close(file);
+    }
 }
 
 int main() {
@@ -47,7 +78,7 @@ int main() {
         clientSock = accept(serverSock, (struct sockaddr*)&clientAddr, &lenAddr);
  	    if (clientSock < 0) 
         {
-            perror("proposal declientd");
+            perror("proposal declined");
             exit(EXIT_FAILURE);
         }
         handling(clientSock);
@@ -56,4 +87,3 @@ int main() {
     WSACleanup();
     return 0;
 }
-
